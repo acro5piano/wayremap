@@ -24,6 +24,7 @@ def list_devices():
 
 def subscribe_sway():
     def on_window_focus(i3, _e):
+        global is_remap_enabled
         focused = i3.get_tree().find_focused()
         app_name = focused.app_id or focused.window_class
         is_remap_enabled = app_name == 'Leafpad'
@@ -35,6 +36,7 @@ def subscribe_sway():
 
 
 def remap(config: list[Binding], path: str):
+    global is_remap_enabled
     real_input = evdev.InputDevice(path)
     print('using device:', real_input)
 
