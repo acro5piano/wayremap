@@ -2,11 +2,12 @@ import time
 import sys
 import evdev
 import uinput
-from all_keys import ALL_KEYS
-from config import Binding, WayremapConfig, example_config
-from constants import ALL_KEYS, ALT_KEYS, CTRL_KEYS, EV_KEY
 from i3ipc import Connection, Event
 from threading import Thread
+
+import all_keys
+import config
+import constants
 
 
 def is_pressed(value: int) -> bool:
@@ -35,7 +36,7 @@ def subscribe_sway(apps: list[str]):
     sway.main()
 
 
-def remap(bindings: list[Binding], path: str):
+def remap(bindings: list[config.Binding], path: str):
     global is_remap_enabled
     real_input = evdev.InputDevice(path)
     print('using device:', real_input)
@@ -44,17 +45,17 @@ def remap(bindings: list[Binding], path: str):
     is_alt = False
 
     try:
-        with uinput.Device(ALL_KEYS) as virtual_uinput:
+        with uinput.Device(constants.ALL_KEYS) as virtual_uinput:
             time.sleep(1)  # Important delay
             real_input.grab()
 
             for event in real_input.read_loop():
                 if not is_remap_enabled:
                     virtual_uinput.emit((0x01, event.code), event.value)
-                elif event.type == EV_KEY:
-                    if event.code in CTRL_KEYS:
+                elif event.type == constants.EV_KEY:
+                    if event.code in constants.CTRL_KEYS:
                         is_ctrl = is_pressed(event.value)
-                    if event.code in ALT_KEYS:
+                    if event.code in constants.ALT_KEYS:
                         is_alt = is_pressed(event.value)
                     handled = False
                     for binding in bindings:
@@ -86,7 +87,7 @@ def remap(bindings: list[Binding], path: str):
         )
 
 
-def run(config: WayremapConfig, path: str):
+def run(config: config.WayremapConfig, path: str):
     threads = list()
 
     thread_remap = Thread(target=remap, args=(config.bindings, path))
@@ -104,4 +105,4 @@ def run(config: WayremapConfig, path: str):
 
 if __name__ == '__main__':
     # list_devices()
-    run(example_config, '/dev/input/event4')
+    run(config.example_config, '/dev/input/event4')

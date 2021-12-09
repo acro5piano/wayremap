@@ -63,4 +63,7 @@ example_config = WayremapConfig(
         Binding('alt.c', [[k.KEY_LEFTCTRL, k.KEY_C]]),
         Binding('alt.v', [[k.KEY_LEFTCTRL, k.KEY_V]]),
         Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_X]]),
+
+        # Slack helm!
+        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_K]]),
     ])
