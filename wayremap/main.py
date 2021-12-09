@@ -1,4 +1,3 @@
-import signal
 import time
 import sys
 import evdev
@@ -40,7 +39,10 @@ def run(config: list[Binding], path: str):
                     for binding in config:
                         pass_ctrl = is_ctrl and binding.only_ctrl()
                         pass_alt = is_alt and binding.only_alt()
-                        if ((pass_ctrl or pass_alt) and not handled
+                        pass_ctrl_alt = is_ctrl and is_alt and binding.require_ctrl_alt(
+                        )
+                        if ((pass_ctrl or pass_alt or pass_ctrl_alt)
+                                and not handled
                                 and event.code == binding.get_remap_keycode()
                                 and is_pressed(event.value)):
                             handled = True

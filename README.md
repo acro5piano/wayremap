@@ -1,6 +1,6 @@
 # wayremap
 
-A dynamic keyboard remapper for Wayland. 
+Dynamic keyboard remapper for Wayland.
 
 It works on both X Window Manager and Wayland, but focused on Wayland as it intercepts evdev input and require root permission.
 
@@ -12,20 +12,25 @@ When I was using X desktop envionment, there is an awesome tool called `xremap` 
 
 https://github.com/k0kubun/xremap
 
-I was looking for something similar to `xremap`, but not found, so I decided to create on my own.
+I was looking for something similar to `xremap` for Wayland, but not found, so I decided to create on my own.
+
+# Install
+
+```bash
+# TODO: easy install with pip
+# sudo pip install wayremap python-uinput evdev
+```
 
 # Run
 
 For Wayland security model, we have to do execute key remapping as root.
 
-```bash
-# TODO: easy install with pip
-# pip install wayremap python-uinput evdev
-```
-
-And write your own service:
+Simply write your own service and run it as python script:
 
 ```python
+
+#!/usr/bin/env python3
+
 from wayremap import run
 
 wayremap_config = [
@@ -37,8 +42,7 @@ wayremap_config = [
     Binding('ctrl.b', [[k.KEY_LEFT]]),
     Binding('ctrl.p', [[k.KEY_UP]]),
     Binding('ctrl.n', [[k.KEY_DOWN]]),
-    Binding('ctrl.k',
-            [[k.KEY_LEFTSHIFT, k.KEY_END], [k.KEY_LEFTCTRL, k.KEY_X]]),
+    Binding('ctrl.k', [[k.KEY_LEFTSHIFT, k.KEY_END], [k.KEY_LEFTCTRL, k.KEY_X]]),
     Binding('ctrl.a', [[k.KEY_HOME]]),
     Binding('ctrl.e', [[k.KEY_END]]),
     Binding('ctrl.y', [[k.KEY_LEFTCTRL, k.KEY_V]]),
@@ -55,7 +59,7 @@ wayremap_config = [
 ]
 
 
-run(wayremap_config, '/dev/input/event4') 
+run(wayremap_config, '/dev/input/event4')
 ```
 
 Note that `'/dev/input/event4'` varies among system.
