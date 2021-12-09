@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from keycode_map import keycode_map
+from .keycode_map import keycode_map
 import uinput as k
 
 
