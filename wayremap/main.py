@@ -1,27 +1,35 @@
+import signal
 import time
-
+import sys
 import evdev
 import uinput
-
 from all_keys import ALL_KEYS
-from config import example_config, Binding
-from constants import ALL_KEYS, EV_KEY, CTRL_KEYS, ALT_KEYS
+from config import Binding, example_config
+from constants import ALL_KEYS, ALT_KEYS, CTRL_KEYS, EV_KEY
 
 
 def is_pressed(value: int) -> bool:
     return value == 1 or value == 2
 
 
+def list_devices():
+    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+    for device in devices:
+        print(device.path, device.name, device.phys)
+
+
 def run(config: list[Binding], path: str):
     real_input = evdev.InputDevice(path)
-    print(real_input)
+    print("using device:", real_input)
 
     is_ctrl = False
     is_alt = False
 
-    with uinput.Device(ALL_KEYS) as virtual_uinput:
-        time.sleep(1)  # Important delay
-        with real_input.grab_context():
+    try:
+        with uinput.Device(ALL_KEYS) as virtual_uinput:
+            time.sleep(1)  # Important delay
+            real_input.grab()
+
             for event in real_input.read_loop():
                 if event.type == EV_KEY:
                     if event.code in CTRL_KEYS:
@@ -32,7 +40,7 @@ def run(config: list[Binding], path: str):
                     for binding in config:
                         pass_ctrl = is_ctrl and binding.only_ctrl()
                         pass_alt = is_alt and binding.only_alt()
-                        if ((pass_ctrl or pass_alt)
+                        if ((pass_ctrl or pass_alt) and not handled
                                 and event.code == binding.get_remap_keycode()
                                 and is_pressed(event.value)):
                             handled = True
@@ -46,12 +54,15 @@ def run(config: list[Binding], path: str):
                                 virtual_uinput.emit(uinput.KEY_LEFTALT, 1)
                     if not handled:
                         virtual_uinput.emit((0x01, event.code), event.value)
+    except KeyboardInterrupt:
+        real_input.ungrab()
+        sys.exit(0)
+    except OSError:
+        print(
+            "Error:\n  Failed to get device. Did you forget to run `sudo modprobe uinput`?"
+        )
 
 
 if __name__ == '__main__':
+    # list_devices()
     run(example_config, '/dev/input/event4')
-
-# TODO: list-device helper
-# devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
-# for device in devices:
-#    print(device.path, device.name, device.phys)

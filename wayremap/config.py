@@ -25,6 +25,8 @@ class Binding:
 
 example_config = [
     # Emacs-like key binding
+    Binding('ctrl.alt.a', [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
+    Binding('ctrl.alt.e', [[k.KEY_LEFTCTRL, k.KEY_END]]),
     Binding('ctrl.f', [[k.KEY_RIGHT]]),
     Binding('ctrl.b', [[k.KEY_LEFT]]),
     Binding('ctrl.p', [[k.KEY_UP]]),
@@ -36,6 +38,7 @@ example_config = [
     Binding('ctrl.y', [[k.KEY_LEFTCTRL, k.KEY_V]]),
     Binding('alt.f', [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
     Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
+    Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
 
     # OSX-like key binding
     Binding('alt.a', [[k.KEY_LEFTCTRL, k.KEY_A]]),
