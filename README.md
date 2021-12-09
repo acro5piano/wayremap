@@ -82,3 +82,14 @@ sudo python /opt/wayremap.py
 ```
 
 Note that `'/dev/input/event4'` varies among system.
+
+# Known bugs
+
+- `3` is pressed when changing focused window
+- Key repeating become slow while switching focused windowd
+
+# Roadmap
+
+- Packaging for Arch Linux, Debian, Fedora, etc.
+- Enable to load per-application config.
+- Re-write in Rust for better performance.
