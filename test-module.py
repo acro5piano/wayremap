@@ -9,6 +9,9 @@ wayremap_config = WayremapConfig(
         'firefoxdeveloperedition',
     ],
     bindings=[
+        # Slack helm!
+        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_K]]),
+
         # Emacs-like key binding
         Binding('ctrl.alt.a', [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
         Binding('ctrl.alt.e', [[k.KEY_LEFTCTRL, k.KEY_END]]),
@@ -25,6 +28,7 @@ wayremap_config = WayremapConfig(
         Binding('alt.f', [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
         Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
         Binding('alt.d', [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
+        Binding('ctrl.d', [[k.KEY_DELETE]]),
         Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
         Binding('ctrl.s', [[k.KEY_LEFTCTRL, k.KEY_F]]),
 
@@ -32,10 +36,6 @@ wayremap_config = WayremapConfig(
         Binding('alt.a', [[k.KEY_LEFTCTRL, k.KEY_A]]),
         Binding('alt.c', [[k.KEY_LEFTCTRL, k.KEY_C]]),
         Binding('alt.v', [[k.KEY_LEFTCTRL, k.KEY_V]]),
-        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_X]]),
-
-        # Slack helm!
-        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_K]]),
     ])
 
 run(wayremap_config, '/dev/input/event4')
