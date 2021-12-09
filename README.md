@@ -1,3 +1,5 @@
+[![test](https://github.com/acro5piano/wayremap/actions/workflows/test.yml/badge.svg)](https://github.com/acro5piano/wayremap/actions/workflows/test.yml)
+
 # wayremap
 
 Dynamic keyboard remapper for Wayland.
