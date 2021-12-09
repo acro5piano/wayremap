@@ -18,7 +18,7 @@ I was looking for something similar to `xremap` for Wayland, but not found, so I
 
 ```bash
 # TODO: easy install with pip
-# sudo pip install wayremap python-uinput evdev
+# sudo pip install wayremap python-uinput evdev i3ipc
 ```
 
 # Run

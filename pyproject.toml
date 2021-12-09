@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "sway-remap"
-version = "0.1.0"
-description = ""
+name = "wayremap"
+version = "0.0.1"
+description = "A dynamic keyboard remapper for Wayland."
 authors = ["Kay Gosho <ketsume0211@gmail.com>"]
 
 [tool.poetry.dependencies]
