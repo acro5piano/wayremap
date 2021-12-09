@@ -5,7 +5,6 @@ import uinput
 from i3ipc import Connection, Event
 from threading import Thread
 
-import all_keys
 import config
 import constants
 
