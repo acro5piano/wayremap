@@ -2,6 +2,7 @@ import time
 import sys
 import evdev
 import uinput
+import os
 from i3ipc import Connection, Event
 from threading import Thread
 
@@ -13,24 +14,32 @@ def is_pressed(value: int) -> bool:
     return value == 1 or value == 2
 
 
-is_remap_enabled = True
-
-
 def list_devices():
     devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
     for device in devices:
         print(device.path, device.name, device.phys)
 
 
+def find_sway_ipc_path() -> str:
+    for root, _, files in os.walk('/run/user/'):
+        for file in files:
+            if 'sway-ipc' in file:
+                return os.path.join(root, file)
+    raise Exception('Cannot find sway socket under /run/user/')
+
+
+is_remap_enabled = True
+
+
 def subscribe_sway(apps: list[str]):
-    def on_window_focus(i3, _e):
+    def on_window_focus(i3, _):
         global is_remap_enabled
         focused = i3.get_tree().find_focused()
         app_name = focused.app_id or focused.window_class
         is_remap_enabled = app_name in apps
         print('Remap {} for {}'.format(is_remap_enabled, app_name))
 
-    sway = Connection('/run/user/1000/sway-ipc.1000.1601.sock')
+    sway = Connection(find_sway_ipc_path())
     sway.on(Event.WINDOW_FOCUS, on_window_focus)
     sway.main()
 
