@@ -5,8 +5,8 @@ import uinput
 from i3ipc import Connection, Event
 from threading import Thread
 
-import config
-import constants
+from . import config
+from . import constants
 
 
 def is_pressed(value: int) -> bool:
