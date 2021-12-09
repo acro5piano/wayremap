@@ -5,10 +5,15 @@ import uinput
 from all_keys import ALL_KEYS
 from config import Binding, example_config
 from constants import ALL_KEYS, ALT_KEYS, CTRL_KEYS, EV_KEY
+from i3ipc import Connection, Event
+from threading import Thread
 
 
 def is_pressed(value: int) -> bool:
     return value == 1 or value == 2
+
+
+is_remap_enabled = True
 
 
 def list_devices():
@@ -17,9 +22,21 @@ def list_devices():
         print(device.path, device.name, device.phys)
 
 
-def run(config: list[Binding], path: str):
+def subscribe_sway():
+    def on_window_focus(i3, _e):
+        focused = i3.get_tree().find_focused()
+        app_name = focused.app_id or focused.window_class
+        is_remap_enabled = app_name == 'Leafpad'
+        print('Remap {} for {}'.format(is_remap_enabled, app_name))
+
+    sway = Connection('/run/user/1000/sway-ipc.1000.1601.sock')
+    sway.on(Event.WINDOW_FOCUS, on_window_focus)
+    sway.main()
+
+
+def remap(config: list[Binding], path: str):
     real_input = evdev.InputDevice(path)
-    print("using device:", real_input)
+    print('using device:', real_input)
 
     is_ctrl = False
     is_alt = False
@@ -36,24 +53,25 @@ def run(config: list[Binding], path: str):
                     if event.code in ALT_KEYS:
                         is_alt = is_pressed(event.value)
                     handled = False
-                    for binding in config:
-                        pass_ctrl = is_ctrl and binding.only_ctrl()
-                        pass_alt = is_alt and binding.only_alt()
-                        pass_ctrl_alt = is_ctrl and is_alt and binding.require_ctrl_alt(
-                        )
-                        if ((pass_ctrl or pass_alt or pass_ctrl_alt)
-                                and not handled
-                                and event.code == binding.get_remap_keycode()
-                                and is_pressed(event.value)):
-                            handled = True
-                            virtual_uinput.emit(uinput.KEY_CAPSLOCK, 0)
-                            virtual_uinput.emit(uinput.KEY_LEFTALT, 0)
-                            for key_combo in binding.to:
-                                virtual_uinput.emit_combo(key_combo)
-                            if is_ctrl:
-                                virtual_uinput.emit(uinput.KEY_CAPSLOCK, 1)
-                            if is_alt:
-                                virtual_uinput.emit(uinput.KEY_LEFTALT, 1)
+                    if is_remap_enabled:
+                        for binding in config:
+                            pass_ctrl = is_ctrl and binding.only_ctrl()
+                            pass_alt = is_alt and binding.only_alt()
+                            pass_ctrl_alt = is_ctrl and is_alt and binding.require_ctrl_alt(
+                            )
+                            if ((pass_ctrl or pass_alt or pass_ctrl_alt)
+                                    and not handled and event.code
+                                    == binding.get_remap_keycode()
+                                    and is_pressed(event.value)):
+                                handled = True
+                                virtual_uinput.emit(uinput.KEY_CAPSLOCK, 0)
+                                virtual_uinput.emit(uinput.KEY_LEFTALT, 0)
+                                for key_combo in binding.to:
+                                    virtual_uinput.emit_combo(key_combo)
+                                if is_ctrl:
+                                    virtual_uinput.emit(uinput.KEY_CAPSLOCK, 1)
+                                if is_alt:
+                                    virtual_uinput.emit(uinput.KEY_LEFTALT, 1)
                     if not handled:
                         virtual_uinput.emit((0x01, event.code), event.value)
     except KeyboardInterrupt:
@@ -63,6 +81,21 @@ def run(config: list[Binding], path: str):
         print(
             "Error:\n  Failed to get device. Did you forget to run `sudo modprobe uinput`?"
         )
+
+
+def run(config: list[Binding], path: str):
+    threads = list()
+
+    thread_remap = Thread(target=remap, args=(config, path))
+    threads.append(thread_remap)
+    thread_remap.start()
+
+    thread_subscribe_sway = Thread(target=subscribe_sway, args=())
+    threads.append(thread_subscribe_sway)
+    thread_subscribe_sway.start()
+
+    for t in threads:
+        t.join()
 
 
 if __name__ == '__main__':

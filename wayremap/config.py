@@ -44,6 +44,7 @@ example_config = [
     Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
     Binding('alt.d', [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
     Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
+    Binding('ctrl.s', [[k.KEY_LEFTCTRL, k.KEY_F]]),
 
     # OSX-like key binding
     Binding('alt.a', [[k.KEY_LEFTCTRL, k.KEY_A]]),
