@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wayremap"
-version = "0.0.2"
+version = "0.0.3"
 description = "A dynamic keyboard remapper for Wayland."
 authors = ["Kay Gosho <ketsume0211@gmail.com>"]
 

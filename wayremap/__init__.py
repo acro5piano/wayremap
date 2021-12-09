@@ -1,2 +1,1 @@
-from .main import run
-from .config import WayremapConfig, Binding
+from wayremap.main import *
