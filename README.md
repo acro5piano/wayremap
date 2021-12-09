@@ -28,8 +28,7 @@ For Wayland security model, we have to do execute key remapping as root.
 Simply write your own service and run it as python script:
 
 ```python
-
-#!/usr/bin/env python3
+ # /opt/wayremap.py
 
 from wayremap.config import WayremapConfig, Binding
 from wayremap.main import run
@@ -37,6 +36,7 @@ import uinput as k
 
 wayremap_config = WayremapConfig(
     applications=[
+        'Chromium',
         'Brave-browser',
         'Leafpad',
         'firefoxdeveloperedition',
@@ -73,6 +73,13 @@ wayremap_config = WayremapConfig(
 
 run(wayremap_config, '/dev/input/event4')
 
+```
+
+And then
+
+```
+sudo modprobe uinput
+sudo python /opt/wayremap.py
 ```
 
 Note that `'/dev/input/event4'` varies among system.
