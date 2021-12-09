@@ -1,6 +1,8 @@
-# sway-remap
+# wayremap
 
-A keyboard remapper tool for Sway window manager. Still active development.
+A dynamic keyboard remapper for Wayland. 
+
+It works on both X Window Manager and Wayland, but focused on Wayland as it intercepts evdev input and require root permission.
 
 # Motivation
 
@@ -17,65 +19,43 @@ I was looking for something similar to `xremap`, but not found, so I decided to 
 For Wayland security model, we have to do execute key remapping as root.
 
 ```bash
-cargo build --release
-sudo cp target/release/sway-remap /usr/local/bin
-sudo sway-remap sway-remap.yml
+# TODO: easy install with pip
+# pip install wayremap python-uinput evdev
 ```
 
-where sway-remap.yml should be like this:
+And write your own service:
 
-```yaml
-- applications:
-    - Brave-browser
-    - firefoxdeveloperedition
-    - Chromium
-  remap:
-    # OSX like key binding
-    - from: leftalt.a
-      to: [capslock.a]
-    - from: leftalt.c
-      to: [capslock.c]
-    - from: leftalt.v
-      to: [capslock.v]
+```python
+from wayremap import run
 
-    # Emacs like key binding (priority first)
-    - from: leftalt.f
-      to: [capslock.right]
-    - from: leftalt.b
-      to: [capslock.left]
-    - from: leftalt.d
-      to: [capslock.delete]
-    - from: capslock.leftalt.h
-      to: [capslock.backspace]
+wayremap_config = [
+    # Emacs-like key binding
+    Binding('ctrl.alt.a', [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
+    Binding('ctrl.alt.e', [[k.KEY_LEFTCTRL, k.KEY_END]]),
+    Binding('ctrl.alt.h', [[k.KEY_LEFTCTRL, k.KEY_BACKSPACE]]),
+    Binding('ctrl.f', [[k.KEY_RIGHT]]),
+    Binding('ctrl.b', [[k.KEY_LEFT]]),
+    Binding('ctrl.p', [[k.KEY_UP]]),
+    Binding('ctrl.n', [[k.KEY_DOWN]]),
+    Binding('ctrl.k',
+            [[k.KEY_LEFTSHIFT, k.KEY_END], [k.KEY_LEFTCTRL, k.KEY_X]]),
+    Binding('ctrl.a', [[k.KEY_HOME]]),
+    Binding('ctrl.e', [[k.KEY_END]]),
+    Binding('ctrl.y', [[k.KEY_LEFTCTRL, k.KEY_V]]),
+    Binding('alt.f', [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
+    Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
+    Binding('alt.d', [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
+    Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
 
-    - from: capslock.f
-      to: [right]
-    - from: capslock.b
-      to: [left]
-    - from: capslock.n
-      to: [down]
-    - from: capslock.p
-      to: [up]
-    - from: capslock.y
-      to: [capslock.v]
-    - from: capslock.h
-      to: [backspace]
-    - from: capslock.d
-      to: [delete]
-    - from: capslock.a
-      to: [home]
-    - from: capslock.e
-      to: [end]
-    - from: capslock.k
-      to: [leftshift.end, capslock.x]
+    # OSX-like key binding
+    Binding('alt.a', [[k.KEY_LEFTCTRL, k.KEY_A]]),
+    Binding('alt.c', [[k.KEY_LEFTCTRL, k.KEY_C]]),
+    Binding('alt.v', [[k.KEY_LEFTCTRL, k.KEY_V]]),
+    Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_X]]),
+]
+
+
+run(wayremap_config, '/dev/input/event4') 
 ```
 
-Note that:
-
-- `leftctrl` can be work, but not tested
-
-# Known bugs
-
-- Cannot repeat key combo (such as `[leftshift.end, capslock.x]`)
-- Sometimes hang
-- Sway path should not be hard coded.
+Note that `'/dev/input/event4'` varies among system.
