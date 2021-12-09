@@ -108,6 +108,14 @@ python-versions = ">=3.5"
 traitlets = "*"
 
 [[package]]
+name = "nodeenv"
+version = "1.6.0"
+description = "Node.js virtual environment builder"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "parso"
 version = "0.8.3"
 description = "A Python Parser"
@@ -166,6 +174,21 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "pyright"
+version = "0.0.13"
+description = "Command line wrapper for pyright"
+category = "dev"
+optional = false
+python-versions = ">=3"
+
+[package.dependencies]
+nodeenv = ">=1.6.0"
+
+[package.extras]
+all = ["twine (>=3.4.1)"]
+dev = ["twine (>=3.4.1)"]
+
+[[package]]
 name = "python-uinput"
 version = "0.11.2"
 description = "Pythonic API to Linux uinput kernel module."
@@ -214,7 +237,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "66328ec0347cac7869f19aceb0dbf65deb50968a01730dfb6ed6742c5899c9a1"
+content-hash = "3c0e28aa973c64a543d67dab65d8d5df31a6ce97cd789bb9b0bbe401d3805e19"
 
 [metadata.files]
 appnope = [
@@ -252,6 +275,10 @@ matplotlib-inline = [
     {file = "matplotlib-inline-0.1.3.tar.gz", hash = "sha256:a04bfba22e0d1395479f866853ec1ee28eea1485c1d69a6faf00dc3e24ff34ee"},
     {file = "matplotlib_inline-0.1.3-py3-none-any.whl", hash = "sha256:aed605ba3b72462d64d475a21a9296f400a19c4f74a31b59103d2a99ffd5aa5c"},
 ]
+nodeenv = [
+    {file = "nodeenv-1.6.0-py2.py3-none-any.whl", hash = "sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7"},
+    {file = "nodeenv-1.6.0.tar.gz", hash = "sha256:3ef13ff90291ba2a4a7a4ff9a979b63ffdd00a464dbe04acf0ea6471517a4c2b"},
+]
 parso = [
     {file = "parso-0.8.3-py2.py3-none-any.whl", hash = "sha256:c001d4636cd3aecdaf33cbb40aebb59b094be2a74c556778ef5576c175e19e75"},
     {file = "parso-0.8.3.tar.gz", hash = "sha256:8c07be290bb59f03588915921e29e8a50002acaf2cdc5fa0e0114f91709fafa0"},
@@ -275,6 +302,10 @@ ptyprocess = [
 pygments = [
     {file = "Pygments-2.10.0-py3-none-any.whl", hash = "sha256:b8e67fe6af78f492b3c4b3e2970c0624cbf08beb1e493b2c99b9fa1b67a20380"},
     {file = "Pygments-2.10.0.tar.gz", hash = "sha256:f398865f7eb6874156579fdf36bc840a03cab64d1cde9e93d68f46a425ec52c6"},
+]
+pyright = [
+    {file = "pyright-0.0.13-py3-none-any.whl", hash = "sha256:520458c87dc456ed0d405a08a565066aaf5b76281d23861759cfaa3c73f5bda0"},
+    {file = "pyright-0.0.13.tar.gz", hash = "sha256:ca97f9121927847d0aea5d2e757a0bf6d3c25c116c90a3ce6263b4167a12dfc4"},
 ]
 python-uinput = [
     {file = "python-uinput-0.11.2.tar.gz", hash = "sha256:99392b676c77b5795b86b7d75274db33fe754fd1e06fb3d58b167c797dc47f0c"},
