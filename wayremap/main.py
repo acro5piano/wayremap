@@ -51,6 +51,7 @@ def remap(bindings: list[config.Binding], path: str):
 
     is_ctrl = False
     is_alt = False
+    is_shift = False
 
     try:
         with uinput.Device(constants.ALL_KEYS) as virtual_uinput:
@@ -61,29 +62,38 @@ def remap(bindings: list[config.Binding], path: str):
                 if not is_remap_enabled:
                     virtual_uinput.emit((0x01, event.code), event.value)
                 elif event.type == constants.EV_KEY:
+
                     if event.code in constants.CTRL_KEYS:
                         is_ctrl = is_pressed(event.value)
                     if event.code in constants.ALT_KEYS:
                         is_alt = is_pressed(event.value)
+                    if event.code in constants.SHIFT_KEYS:
+                        is_shift = is_pressed(event.value)
+
                     handled = False
                     for binding in bindings:
                         pass_ctrl = is_ctrl and binding.only_ctrl()
                         pass_alt = is_alt and binding.only_alt()
                         pass_ctrl_alt = is_ctrl and is_alt and binding.require_ctrl_alt(
                         )
-                        if ((pass_ctrl or pass_alt or pass_ctrl_alt)
-                                and not handled
+                        pass_ctrl_shsift = is_ctrl and is_shift and binding.require_ctrl_shift(
+                        )
+                        if ((pass_ctrl or pass_alt or pass_ctrl_alt
+                             or pass_ctrl_shsift) and not handled
                                 and event.code == binding.get_remap_keycode()
                                 and is_pressed(event.value)):
                             handled = True
                             virtual_uinput.emit(uinput.KEY_CAPSLOCK, 0)
                             virtual_uinput.emit(uinput.KEY_LEFTALT, 0)
+                            virtual_uinput.emit(uinput.KEY_LEFTSHIFT, 0)
                             for key_combo in binding.to:
                                 virtual_uinput.emit_combo(key_combo)
                             if is_ctrl:
                                 virtual_uinput.emit(uinput.KEY_CAPSLOCK, 1)
                             if is_alt:
                                 virtual_uinput.emit(uinput.KEY_LEFTALT, 1)
+                            if is_shift:
+                                virtual_uinput.emit(uinput.KEY_LEFTSHIFT, 1)
                     if not handled:
                         virtual_uinput.emit((0x01, event.code), event.value)
     except KeyboardInterrupt:

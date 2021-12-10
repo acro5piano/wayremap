@@ -6,6 +6,10 @@ ALT_KEYS = [
     evdev.ecodes.KEY_LEFTALT,  # type: ignore
     evdev.ecodes.KEY_RIGHTALT,  # type: ignore
 ]
+SHIFT_KEYS = [
+    evdev.ecodes.KEY_LEFTSHIFT,  # type: ignore
+    evdev.ecodes.KEY_RIGHTSHIFT,  # type: ignore
+]
 
 EV_KEY = evdev.ecodes.EV_KEY  # type: ignore
 
