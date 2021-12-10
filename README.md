@@ -8,7 +8,7 @@ It works on both X Window Manager and Wayland, but focused on Wayland as it inte
 
 # Motivation
 
-Sway and Wayland is awesome. It brings lots of benefit to Linux desktop environment.
+Wayland and Sway is awesome. It brings lots of benefit to Linux desktop environment.
 
 When I was using X desktop envionment, there is an awesome tool called `xremap` which remap keys **based on current focused application**.
 
@@ -36,6 +36,7 @@ from wayremap.main import run
 import uinput as k
 
 wayremap_config = WayremapConfig(
+    # Filter applications which remap will be applied
     applications=[
         'Chromium',
         'Brave-browser',
@@ -92,6 +93,7 @@ Note that `'/dev/input/event4'` varies among system.
 
 # Roadmap
 
+- Enable to run wihtout Sway
 - Packaging for Arch Linux, Debian, Fedora, etc.
 - Enable to load per-application config.
 - Re-write in Rust for better performance.
