@@ -17,13 +17,16 @@ class Binding:
         return keycode_map[key_name]
 
     def only_ctrl(self) -> bool:
-        return 'ctrl' in self.remap and not 'alt' in self.remap
+        return 'ctrl' in self.remap and not 'alt' in self.remap and not 'shift' in self.remap
 
     def only_alt(self) -> bool:
-        return 'alt' in self.remap and not 'ctrl' in self.remap
+        return 'alt' in self.remap and not 'ctrl' in self.remap and not 'shift' in self.remap
 
     def require_ctrl_alt(self) -> bool:
-        return 'alt' in self.remap and 'ctrl' in self.remap
+        return 'alt' in self.remap and 'ctrl' in self.remap and not 'shift' in self.remap
+
+    def require_ctrl_shift(self) -> bool:
+        return 'ctrl' in self.remap and 'shift' in self.remap
 
 
 @dataclass
