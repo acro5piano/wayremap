@@ -35,6 +35,8 @@ def subscribe_sway(apps: list[str]):
     def on_window_focus(i3, _):
         global is_remap_enabled
         focused = i3.get_tree().find_focused()
+        if not focused:  # some applications like bemenu, this check is needed.
+            return
         app_name = focused.app_id or focused.window_class
         is_remap_enabled = app_name in apps
         print('Remap {} for {}'.format(is_remap_enabled, app_name))
