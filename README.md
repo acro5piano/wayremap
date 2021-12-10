@@ -1,4 +1,5 @@
 [![test](https://github.com/acro5piano/wayremap/actions/workflows/test.yml/badge.svg)](https://github.com/acro5piano/wayremap/actions/workflows/test.yml)
+[![PyPI version](https://badge.fury.io/py/wayremap.svg)](https://badge.fury.io/py/wayremap)
 
 # wayremap
 
