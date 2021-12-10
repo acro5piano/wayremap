@@ -60,9 +60,7 @@ def remap(bindings: list[config.Binding], path: str):
             real_input.grab()
 
             for event in real_input.read_loop():
-                if not is_remap_enabled:
-                    virtual_uinput.emit((0x01, event.code), event.value)
-                elif event.type == constants.EV_KEY:
+                if event.type == constants.EV_KEY:
                     if event.code in constants.CTRL_KEYS:
                         is_ctrl = is_pressed(event.value)
                     if event.code in constants.ALT_KEYS:
@@ -73,8 +71,8 @@ def remap(bindings: list[config.Binding], path: str):
                         pass_alt = is_alt and binding.only_alt()
                         pass_ctrl_alt = is_ctrl and is_alt and binding.require_ctrl_alt(
                         )
-                        if ((pass_ctrl or pass_alt or pass_ctrl_alt)
-                                and not handled
+                        if (is_remap_enabled and not handled
+                                and (pass_ctrl or pass_alt or pass_ctrl_alt)
                                 and event.code == binding.get_remap_keycode()
                                 and is_pressed(event.value)):
                             handled = True
