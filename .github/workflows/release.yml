@@ -1,0 +1,21 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: actions/cache@master
+        with:
+          key: v4-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            ~/.cache/pypoetry
+      - uses: abatilo/actions-poetry@v2.0.0
+      - run: poetry install
+      - run: poetry build
+      - run: poetry publish --username acro5piano --password $PYPI_PASSWORD
+        env:
+          PYPI_PASSWORD: {{ secrets.PYPI_PASSWORD }}
