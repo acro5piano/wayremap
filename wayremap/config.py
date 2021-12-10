@@ -56,6 +56,7 @@ example_config = WayremapConfig(
         Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
         Binding('alt.d', [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
         Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
+        Binding('ctrl.d', [[k.KEY_DELETE]]),
         Binding('ctrl.s', [[k.KEY_LEFTCTRL, k.KEY_F]]),
 
         # OSX-like key binding
