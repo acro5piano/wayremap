@@ -16,6 +16,7 @@ jobs:
       - uses: abatilo/actions-poetry@v2.0.0
       - run: poetry install
       - run: poetry build
-      - run: poetry publish --username acro5piano --password $PYPI_PASSWORD
+      - run: poetry config pypi-token.pypi $PYPI_PASSWORD
         env:
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      - run: poetry publish
