@@ -90,9 +90,18 @@ Please note that
 - modifier keys are `ctrl` or `alt` or both
 - `'/dev/input/event4'` varies among system.
 
+# Enable wayremap as systemd service
+
+```bash
+sudo vim /etc/wayremap.py # Edit your config
+sudo cp systemd/wayremap.service /etc/systemd/system/wayremap.service
+sudo systemctl enable wayremap
+sudo reboot
+```
+
 # Known bugs
 
-- `3` is pressed when changing focused window
+- ~~`3` is pressed when changing focused window~~ → Fixed now
 - Key repeating become slow while switching focused windowd
 
 # Roadmap
