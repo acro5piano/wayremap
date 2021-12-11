@@ -93,7 +93,8 @@ Please note that
 # Enable wayremap as systemd service
 
 ```bash
-sudo vim /etc/wayremap.py # Edit your config
+echo uinput | sudo tee /etc/modules-load.d/wayremap.conf # Add uinput to dependent linux modules
+sudo vim /etc/wayremap.config.py # Edit your config
 sudo cp systemd/wayremap.service /etc/systemd/system/wayremap.service
 sudo systemctl enable wayremap
 sudo reboot
