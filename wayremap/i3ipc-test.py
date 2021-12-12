@@ -4,7 +4,7 @@ i3 = Connection()
 
 
 # Dynamically name your workspaces after the current window class
-def on_window_focus(i3, e):
+def on_window_focus(i3, _):
     focused = i3.get_tree().find_focused()
     app_name = focused.app_id or focused.window_class
     print(app_name)
