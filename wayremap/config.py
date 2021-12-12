@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import uinput as k
-import wayremap.ecodes as e
+from wayremap import ecodes as e
 from wayremap import constants
 
 
