@@ -32,6 +32,12 @@ is_remap_enabled = True
 
 
 def subscribe_sway(apps: list[str]):
+    if apps is None or len(apps) == 0:
+        print(
+            "Warning: No applications specified to config. Applying remap to all applications."
+        )
+        return
+
     def on_window_focus(i3, _):
         global is_remap_enabled
         focused = i3.get_tree().find_focused()
@@ -41,9 +47,14 @@ def subscribe_sway(apps: list[str]):
         is_remap_enabled = app_name in apps
         print('Remap {} for {}'.format(is_remap_enabled, app_name))
 
-    sway = Connection(find_sway_ipc_path())
-    sway.on(Event.WINDOW_FOCUS, on_window_focus)
-    sway.main()
+    try:
+        sway = Connection(find_sway_ipc_path())
+        sway.on(Event.WINDOW_FOCUS, on_window_focus)
+        sway.main()
+    except:
+        print(
+            "Warning: Couldn't connect to Sway and  fallback to apply all applications. Is sway running?"
+        )
 
 
 def remap(bindings: list[config.Binding], path: str):
