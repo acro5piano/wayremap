@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from wayremap import keycode_map
+from wayremap.keycode_map import keycode_map
 import uinput as k
 
 
@@ -35,7 +35,7 @@ class WayremapConfig:
 example_config = WayremapConfig(
     applications=[
         'Brave-browser',
-        'Leafpad',
+        'chromium',
         'firefoxdeveloperedition',
     ],
     bindings=[
