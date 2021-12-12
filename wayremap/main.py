@@ -7,8 +7,8 @@ from i3ipc import Connection, Event
 from threading import Thread
 import traceback
 
-from . import config
-from . import constants
+from wayremap import config
+from wayremap import constants
 
 
 def is_pressed(value: int) -> bool:
