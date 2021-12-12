@@ -34,7 +34,7 @@ For Wayland security model, we have to do execute key remapping as root.
 Simply write your own service and run it as python script:
 
 ```python
- # /opt/wayremap.py
+ # /etc/wayremap.config.py
 
 from wayremap.config import WayremapConfig, Binding
 from wayremap.main import run
@@ -50,6 +50,10 @@ wayremap_config = WayremapConfig(
         'firefoxdeveloperedition',
     ],
     bindings=[
+        # To see all available binding keys, please see
+        # https://github.com/acro5piano/wayremap/blob/06d27c9bb86b766d7fd1e4230f3a16827785519e/wayremap/ecodes.py
+        # modifier keys are `KEY_LEFTCTRL` or `KEY_LEFTALT`, or both. Neither `shift` nor `super` is not implemented yet.
+
         # Emacs-like key binding
         Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_A],
                 [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
@@ -83,6 +87,8 @@ wayremap_config = WayremapConfig(
         Binding([e.KEY_LEFTALT, e.KEY_X], [[k.KEY_LEFTCTRL, k.KEY_K]]),
     ])
 
+# Finally, run wayremap.
+# Note that `'/dev/input/event4'` varies among system.
 run(wayremap_config, '/dev/input/event4')
 
 ```
@@ -93,11 +99,6 @@ And then
 sudo modprobe uinput
 sudo python /opt/wayremap.py
 ```
-
-Please note that
-
-- modifier keys are `KEY_LEFTCTRL` or `KEY_LEFTALT`, or both. Neither `shift` nor `super` is not implemented yet.
-- `'/dev/input/event4'` varies among system.
 
 # Enable wayremap as a systemd service
 
