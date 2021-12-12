@@ -1,29 +1,40 @@
 from dataclasses import dataclass
-from .keycode_map import keycode_map
 import uinput as k
+from wayremap import ecodes as e
+from wayremap import constants
 
 
 @dataclass
 class Binding:
-    remap: str
+    remap: list[int]
     to: list[list[tuple[int, int]]]
 
-    def get_remap_keycode(self) -> str:
+    def get_remap_keycode(self) -> int:
         """
         @type evdev.ecodes.KEY_F
         """
-        _k = self.remap.split('.')
-        key_name = _k[len(_k) - 1]
-        return keycode_map[key_name]
+        return self.remap[len(self.remap) - 1]
+
+    def _has_ctrl(self) -> bool:
+        for k in constants.CTRL_KEYS:
+            if k in self.remap:
+                return True
+        return False
+
+    def _has_alt(self) -> bool:
+        for k in constants.ALT_KEYS:
+            if k in self.remap:
+                return True
+        return False
 
     def only_ctrl(self) -> bool:
-        return 'ctrl' in self.remap and not 'alt' in self.remap
+        return self._has_ctrl() and not self._has_alt()
 
     def only_alt(self) -> bool:
-        return 'alt' in self.remap and not 'ctrl' in self.remap
+        return not self._has_ctrl() and self._has_alt()
 
     def require_ctrl_alt(self) -> bool:
-        return 'alt' in self.remap and 'ctrl' in self.remap
+        return self._has_ctrl() and self._has_alt()
 
 
 @dataclass
@@ -35,36 +46,38 @@ class WayremapConfig:
 example_config = WayremapConfig(
     applications=[
         'Brave-browser',
-        'Leafpad',
+        'chromium',
         'firefoxdeveloperedition',
     ],
     bindings=[
         # Emacs-like key binding
-        Binding('ctrl.alt.a', [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
-        Binding('ctrl.alt.e', [[k.KEY_LEFTCTRL, k.KEY_END]]),
-        Binding('ctrl.alt.h', [[k.KEY_LEFTCTRL, k.KEY_BACKSPACE]]),
-        Binding('ctrl.f', [[k.KEY_RIGHT]]),
-        Binding('ctrl.b', [[k.KEY_LEFT]]),
-        Binding('ctrl.p', [[k.KEY_UP]]),
-        Binding('ctrl.n', [[k.KEY_DOWN]]),
-        Binding('ctrl.k',
+        Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_A],
+                [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_E],
+                [[k.KEY_LEFTCTRL, k.KEY_END]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_H],
+                [[k.KEY_LEFTCTRL, k.KEY_BACKSPACE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_F], [[k.KEY_RIGHT]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_B], [[k.KEY_LEFT]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_P], [[k.KEY_UP]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_N], [[k.KEY_DOWN]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_K],
                 [[k.KEY_LEFTSHIFT, k.KEY_END], [k.KEY_LEFTCTRL, k.KEY_X]]),
-        Binding('ctrl.a', [[k.KEY_HOME]]),
-        Binding('ctrl.e', [[k.KEY_END]]),
-        Binding('ctrl.y', [[k.KEY_LEFTCTRL, k.KEY_V]]),
-        Binding('alt.f', [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
-        Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
-        Binding('alt.d', [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
-        Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
-        Binding('ctrl.d', [[k.KEY_DELETE]]),
-        Binding('ctrl.s', [[k.KEY_LEFTCTRL, k.KEY_F]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_A], [[k.KEY_HOME]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_E], [[k.KEY_END]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_Y], [[k.KEY_LEFTCTRL, k.KEY_V]]),
+        Binding([e.KEY_LEFTALT, e.KEY_F], [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
+        Binding([e.KEY_LEFTALT, e.KEY_B], [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
+        Binding([e.KEY_LEFTALT, e.KEY_D], [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_H], [[k.KEY_BACKSPACE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_D], [[k.KEY_DELETE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_S], [[k.KEY_LEFTCTRL, k.KEY_F]]),
 
         # OSX-like key binding
-        Binding('alt.a', [[k.KEY_LEFTCTRL, k.KEY_A]]),
-        Binding('alt.c', [[k.KEY_LEFTCTRL, k.KEY_C]]),
-        Binding('alt.v', [[k.KEY_LEFTCTRL, k.KEY_V]]),
-        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_X]]),
+        Binding([e.KEY_LEFTALT, e.KEY_A], [[k.KEY_LEFTCTRL, k.KEY_A]]),
+        Binding([e.KEY_LEFTALT, e.KEY_C], [[k.KEY_LEFTCTRL, k.KEY_C]]),
+        Binding([e.KEY_LEFTALT, e.KEY_V], [[k.KEY_LEFTCTRL, k.KEY_V]]),
 
         # Slack helm!
-        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_K]]),
+        Binding([e.KEY_LEFTALT, e.KEY_X], [[k.KEY_LEFTCTRL, k.KEY_K]]),
     ])

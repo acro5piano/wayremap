@@ -5,9 +5,10 @@ import uinput
 import os
 from i3ipc import Connection, Event
 from threading import Thread
+import traceback
 
-from . import config
-from . import constants
+from wayremap import config
+from wayremap import constants
 
 
 def is_pressed(value: int) -> bool:
@@ -55,6 +56,7 @@ def subscribe_sway(apps: list[str]):
         print(
             "Warning: Couldn't connect to Sway and  fallback to apply all applications. Is sway running?"
         )
+        print(traceback.format_exc())
 
 
 def remap(bindings: list[config.Binding], path: str):
@@ -99,11 +101,13 @@ def remap(bindings: list[config.Binding], path: str):
                         virtual_uinput.emit((0x01, event.code), event.value)
     except KeyboardInterrupt:
         real_input.ungrab()
+        print(traceback.format_exc())
         sys.exit(0)
     except OSError:
         print(
             "Error:\n  Failed to get device. Did you forget to run `sudo modprobe uinput`?"
         )
+        print(traceback.format_exc())
 
 
 def run(config: config.WayremapConfig, path: str):

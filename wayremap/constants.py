@@ -1,11 +1,9 @@
 import evdev
+from wayremap import ecodes
 import uinput
 
-CTRL_KEYS = [evdev.ecodes.KEY_CAPSLOCK]  # type: ignore
-ALT_KEYS = [
-    evdev.ecodes.KEY_LEFTALT,  # type: ignore
-    evdev.ecodes.KEY_RIGHTALT,  # type: ignore
-]
+CTRL_KEYS = [ecodes.KEY_CAPSLOCK, ecodes.KEY_LEFTCTRL, ecodes.KEY_RIGHTCTRL]
+ALT_KEYS = [ecodes.KEY_LEFTALT, ecodes.KEY_RIGHTALT]
 
 EV_KEY = evdev.ecodes.EV_KEY  # type: ignore
 

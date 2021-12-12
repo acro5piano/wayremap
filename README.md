@@ -21,6 +21,10 @@ I was looking for something similar to `xremap` for Wayland, but not found, so I
 
 ```bash
 sudo pip install wayremap
+
+# For beta version
+sudo pip3 install git+https://github.com/acro5piano/wayremap
+
 ```
 
 # Run
@@ -30,10 +34,11 @@ For Wayland security model, we have to do execute key remapping as root.
 Simply write your own service and run it as python script:
 
 ```python
- # /opt/wayremap.py
+ # /etc/wayremap.config.py
 
 from wayremap.config import WayremapConfig, Binding
 from wayremap.main import run
+from wayremap import ecodes as e
 import uinput as k
 
 wayremap_config = WayremapConfig(
@@ -45,35 +50,45 @@ wayremap_config = WayremapConfig(
         'firefoxdeveloperedition',
     ],
     bindings=[
+        # To see all available binding keys, please see
+        # https://github.com/acro5piano/wayremap/blob/06d27c9bb86b766d7fd1e4230f3a16827785519e/wayremap/ecodes.py
+        # modifier keys are `KEY_LEFTCTRL` or `KEY_LEFTALT`, or both. Neither `shift` nor `super` is not implemented yet.
+
         # Emacs-like key binding
-        Binding('ctrl.alt.a', [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
-        Binding('ctrl.alt.e', [[k.KEY_LEFTCTRL, k.KEY_END]]),
-        Binding('ctrl.alt.h', [[k.KEY_LEFTCTRL, k.KEY_BACKSPACE]]),
-        Binding('ctrl.f', [[k.KEY_RIGHT]]),
-        Binding('ctrl.b', [[k.KEY_LEFT]]),
-        Binding('ctrl.p', [[k.KEY_UP]]),
-        Binding('ctrl.n', [[k.KEY_DOWN]]),
-        Binding('ctrl.k',
+        Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_A],
+                [[k.KEY_LEFTCTRL, k.KEY_HOME]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_E],
+                [[k.KEY_LEFTCTRL, k.KEY_END]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_LEFTALT, e.KEY_H],
+                [[k.KEY_LEFTCTRL, k.KEY_BACKSPACE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_F], [[k.KEY_RIGHT]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_B], [[k.KEY_LEFT]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_P], [[k.KEY_UP]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_N], [[k.KEY_DOWN]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_K],
                 [[k.KEY_LEFTSHIFT, k.KEY_END], [k.KEY_LEFTCTRL, k.KEY_X]]),
-        Binding('ctrl.a', [[k.KEY_HOME]]),
-        Binding('ctrl.e', [[k.KEY_END]]),
-        Binding('ctrl.y', [[k.KEY_LEFTCTRL, k.KEY_V]]),
-        Binding('alt.f', [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
-        Binding('alt.b', [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
-        Binding('alt.d', [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
-        Binding('ctrl.h', [[k.KEY_BACKSPACE]]),
-        Binding('ctrl.s', [[k.KEY_LEFTCTRL, k.KEY_F]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_A], [[k.KEY_HOME]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_E], [[k.KEY_END]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_Y], [[k.KEY_LEFTCTRL, k.KEY_V]]),
+        Binding([e.KEY_LEFTALT, e.KEY_F], [[k.KEY_LEFTCTRL, k.KEY_RIGHT]]),
+        Binding([e.KEY_LEFTALT, e.KEY_B], [[k.KEY_LEFTCTRL, k.KEY_LEFT]]),
+        Binding([e.KEY_LEFTALT, e.KEY_D], [[k.KEY_LEFTCTRL, k.KEY_DELETE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_H], [[k.KEY_BACKSPACE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_D], [[k.KEY_DELETE]]),
+        Binding([e.KEY_LEFTCTRL, e.KEY_S], [[k.KEY_LEFTCTRL, k.KEY_F]]),
+
 
         # OSX-like key binding
-        Binding('alt.a', [[k.KEY_LEFTCTRL, k.KEY_A]]),
-        Binding('alt.c', [[k.KEY_LEFTCTRL, k.KEY_C]]),
-        Binding('alt.v', [[k.KEY_LEFTCTRL, k.KEY_V]]),
-        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_X]]),
+        Binding([e.KEY_LEFTALT, e.KEY_A], [[k.KEY_LEFTCTRL, k.KEY_A]]),
+        Binding([e.KEY_LEFTALT, e.KEY_C], [[k.KEY_LEFTCTRL, k.KEY_C]]),
+        Binding([e.KEY_LEFTALT, e.KEY_V], [[k.KEY_LEFTCTRL, k.KEY_V]]),
 
         # Slack helm!
-        Binding('alt.x', [[k.KEY_LEFTCTRL, k.KEY_K]]),
+        Binding([e.KEY_LEFTALT, e.KEY_X], [[k.KEY_LEFTCTRL, k.KEY_K]]),
     ])
 
+# Finally, run wayremap.
+# Note that `'/dev/input/event4'` varies among system.
 run(wayremap_config, '/dev/input/event4')
 
 ```
@@ -85,17 +100,12 @@ sudo modprobe uinput
 sudo python /opt/wayremap.py
 ```
 
-Please note that
-
-- modifier keys are `ctrl` or `alt` or both
-- `'/dev/input/event4'` varies among system.
-
-# Enable wayremap as systemd service
+# Enable wayremap as a systemd service
 
 ```bash
-echo uinput | sudo tee /etc/modules-load.d/wayremap.conf # Add uinput to dependent linux modules
+echo uinput | sudo tee /etc/modules-load.d/wayremap.conf # Add uinput to auto-loaded linux modules
 sudo vim /etc/wayremap.config.py # Edit your config
-sudo cp systemd/wayremap.service /etc/systemd/system/wayremap.service
+sudo cp ./systemd/wayremap.service /etc/systemd/system/wayremap.service
 sudo systemctl enable wayremap
 sudo reboot
 ```
@@ -107,8 +117,8 @@ sudo reboot
 
 # Roadmap
 
-- Support `shift` key too.
-- Enable to run wihtout Sway.
-- Packaging for Arch Linux, Debian, Fedora, etc.
-- Enable to load per-application config.
-- Re-write in Rust for better performance.
+- [x] Enable to run wihtout Sway.
+- [ ] Support `shift` and `super` keys too.
+- [ ] Packaging for Arch Linux, Debian, Fedora, etc.
+- [ ] Enable to load per-application config.
+- [ ] Re-write in Rust for better performance.
