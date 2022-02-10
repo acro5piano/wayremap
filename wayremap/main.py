@@ -62,7 +62,6 @@ def wait_sway(tried=0):
                 'Cannot find sway socket under `/run/user/`, tried 30 seconds.'
             )
         else:
-            print(f"Waiting for sway... {tried}")
             time.sleep(1)
             wait_sway(tried + 1)
 
