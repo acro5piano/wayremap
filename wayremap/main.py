@@ -7,8 +7,13 @@ from i3ipc import Connection, Event
 from threading import Thread
 import traceback
 
-from wayremap import config
-from wayremap import constants
+from wayremap import config, constants
+
+is_remap_enabled = True
+
+
+def get_identifier(device: evdev.InputDevice):
+    return f'{device.name} {device.phys}'
 
 
 def is_pressed(value: int) -> bool:
@@ -18,7 +23,26 @@ def is_pressed(value: int) -> bool:
 def list_devices():
     devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
     for device in devices:
-        print(device.path, device.name, device.phys)
+        identifier = get_identifier(device)
+        print(f'{device.path}: {identifier}')
+
+
+def find_input_path_from_name(device_identifier: str):
+    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+    for device in devices:
+        if get_identifier(device) == device_identifier:
+            return device.path
+    raise Exception(f"Cannot find device named {device_identifier}")
+
+
+def get_input_path(config: config.WayremapConfig):
+    if config.input_path:
+        return config.input_path
+    elif config.input_identifier:
+        return find_input_path_from_name(config.input_identifier)
+    else:
+        raise Exception(
+            'You must specify either input_path or input_name to config.')
 
 
 def find_sway_ipc_path() -> str:
@@ -27,9 +51,6 @@ def find_sway_ipc_path() -> str:
             if 'sway-ipc' in file:
                 return os.path.join(root, file)
     raise Exception('Cannot find sway socket under /run/user/')
-
-
-is_remap_enabled = True
 
 
 def subscribe_sway(apps: list[str]):
@@ -73,6 +94,7 @@ def remap(bindings: list[config.Binding], path: str):
             real_input.grab()
 
             for event in real_input.read_loop():
+                print(event)
                 if event.type == constants.EV_KEY:
                     if event.code in constants.CTRL_KEYS:
                         is_ctrl = is_pressed(event.value)
@@ -110,10 +132,11 @@ def remap(bindings: list[config.Binding], path: str):
         print(traceback.format_exc())
 
 
-def run(config: config.WayremapConfig, path: str):
+def run(config: config.WayremapConfig):
     threads = list()
 
-    thread_remap = Thread(target=remap, args=(config.bindings, path))
+    thread_remap = Thread(target=remap,
+                          args=(config.bindings, get_input_path(config)))
     threads.append(thread_remap)
     thread_remap.start()
 
@@ -124,8 +147,3 @@ def run(config: config.WayremapConfig, path: str):
 
     for t in threads:
         t.join()
-
-
-if __name__ == '__main__':
-    # list_devices()
-    run(config.example_config, '/dev/input/event4')
