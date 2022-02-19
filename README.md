@@ -29,19 +29,20 @@ sudo pip3 install git+https://github.com/acro5piano/wayremap
 
 # Run
 
-For Wayland security model, we have to do execute the key remapping as root.
+For Wayland security model, we have to run keyboard remapping tools as root permission.
 
 Simply write your own service and run it as a python script:
 
 ```python
  # /etc/wayremap.config.py
 
-from wayremap.config import WayremapConfig, Binding
-from wayremap.main import run
-from wayremap import ecodes as e
+from wayremap import ecodes as e, run, WayremapConfig, Binding
 import uinput as k
 
 wayremap_config = WayremapConfig(
+    # Note that `'/dev/input/event4'` varies among system.
+    input_path='/dev/input/event4',
+
     # Filter applications which remap will be applied
     applications=[
         'Chromium',
@@ -49,6 +50,7 @@ wayremap_config = WayremapConfig(
         'Leafpad',
         'firefoxdeveloperedition',
     ],
+
     bindings=[
         # To see all available binding keys, please see
         # https://github.com/acro5piano/wayremap/blob/06d27c9bb86b766d7fd1e4230f3a16827785519e/wayremap/ecodes.py
@@ -88,8 +90,7 @@ wayremap_config = WayremapConfig(
     ])
 
 # Finally, run wayremap.
-# Note that `'/dev/input/event4'` varies among system.
-run(wayremap_config, '/dev/input/event4')
+run(wayremap_config)
 
 ```
 

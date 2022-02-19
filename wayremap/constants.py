@@ -432,4 +432,7 @@ ALL_KEYS = [
     uinput.KEY_KBDINPUTASSIST_CANCEL,
     uinput.KEY_MIN_INTERESTING,
     uinput.KEY_MAX,
+    uinput.BTN_MIDDLE,
+    uinput.BTN_LEFT,
+    uinput.BTN_RIGHT,
 ]
