@@ -53,6 +53,20 @@ def find_sway_ipc_path() -> str:
     raise Exception('Cannot find sway socket under /run/user/')
 
 
+def wait_sway(tried=0):
+    try:
+        find_sway_ipc_path()
+    except:
+        if tried > 30:
+            raise Exception(
+                'Cannot find sway socket under `/run/user/`, tried 30 seconds.'
+            )
+        else:
+            print(f"Waiting for sway... {tried}")
+            time.sleep(1)
+            wait_sway(tried + 1)
+
+
 def subscribe_sway(apps: list[str]):
     if apps is None or len(apps) == 0:
         print(
