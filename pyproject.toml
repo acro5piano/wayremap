@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wayremap"
-version = "0.0.8"
+version = "0.0.9"
 description = "A dynamic keyboard remapper for Wayland."
 authors = ["Kay Gosho <ketsume0211@gmail.com>"]
 repository = "https://github.com/acro5piano/wayremap"
