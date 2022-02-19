@@ -132,18 +132,19 @@ def remap(bindings: list[config.Binding], path: str):
         print(traceback.format_exc())
 
 
-def run(config: config.WayremapConfig):
+def run(*configs: config.WayremapConfig):
     threads = list()
 
-    thread_remap = Thread(target=remap,
-                          args=(config.bindings, get_input_path(config)))
-    threads.append(thread_remap)
-    thread_remap.start()
+    for config in configs:
+        thread_remap = Thread(target=remap,
+                              args=(config.bindings, get_input_path(config)))
+        threads.append(thread_remap)
+        thread_remap.start()
 
-    thread_subscribe_sway = Thread(target=subscribe_sway,
-                                   args=(config.applications, ))
-    threads.append(thread_subscribe_sway)
-    thread_subscribe_sway.start()
+        thread_subscribe_sway = Thread(target=subscribe_sway,
+                                       args=(config.applications, ))
+        threads.append(thread_subscribe_sway)
+        thread_subscribe_sway.start()
 
     for t in threads:
         t.join()
