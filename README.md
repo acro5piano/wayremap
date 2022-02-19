@@ -36,7 +36,7 @@ Simply write your own service and run it as python script:
 ```python
  # /etc/wayremap.config.py
 
-from wayremap import ecodes as e, run, WayremapConfig, Binding
+from wayremap import ecodes as e, run, WayremapConfig, Binding, wait_sway
 import uinput as k
 
 wayremap_config = WayremapConfig(
@@ -88,6 +88,10 @@ wayremap_config = WayremapConfig(
         # Slack helm!
         Binding([e.KEY_LEFTALT, e.KEY_X], [[k.KEY_LEFTCTRL, k.KEY_K]]),
     ])
+
+
+# Required if you want to use wayremap as a startup service.
+wait_sway()
 
 # Finally, run wayremap.
 run(wayremap_config)
