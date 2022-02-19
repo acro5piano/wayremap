@@ -29,9 +29,9 @@ sudo pip3 install git+https://github.com/acro5piano/wayremap
 
 # Run
 
-For Wayland security model, we have to run key remapping as root permission.
+For Wayland security model, we have to run keyboard remapping tools as root permission.
 
-Simply write your own service and run it as python script:
+Simply write your own service and run it as a python script:
 
 ```python
  # /etc/wayremap.config.py
