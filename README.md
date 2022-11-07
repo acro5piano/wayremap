@@ -102,7 +102,7 @@ And then
 
 ```
 sudo modprobe uinput
-sudo python /opt/wayremap.py
+sudo python /etc/wayremap.config.py
 ```
 
 # Enable wayremap as a systemd service
