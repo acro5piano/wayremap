@@ -1,15 +1,15 @@
 [Unit]
-Description=wayremap on startup with 10 seconds delay
+Description=wayremap on startup
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/usr/bin/python /etc/wayremap.config.py
-ExecStartPre=/bin/sleep 10
 TimeoutSec=0
 StandardOutput=tty
-RemainAfterExit=yes
+RemainAfterExit=no
 User=root
 Group=root
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
